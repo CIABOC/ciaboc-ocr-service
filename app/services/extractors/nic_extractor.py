@@ -46,7 +46,7 @@ OCR_DIGIT_CONFUSION: dict[str, str] = {
 
 # Name-related label patterns found on Sri Lankan NICs
 NAME_LABEL_PATTERNS = [
-    re.compile(r"(?:full\s*name|name)\s*[:\-]?\s*(.+)", re.IGNORECASE),
+    re.compile(r"(?:full\s*name|name)\s*[:\-]\s*(.+)", re.IGNORECASE),
 ]
 
 DOB_LABEL_PATTERNS = [

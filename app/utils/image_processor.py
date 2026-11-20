@@ -1,3 +1,18 @@
+"""
+Image validation and processing utilities.
+
+Validates uploaded images for:
+  - Non-empty content
+  - File size limits
+  - Supported formats (JPEG, PNG)
+  - Pixel count limits
+  - Image integrity (verify)
+  - Decompression bomb protection
+  - Multi-frame / animated image rejection
+  - Actual content validation (not just extension/MIME)
+
+Images are processed in memory only — never saved to disk.
+"""
 
 from io import BytesIO
 import warnings
@@ -5,8 +20,8 @@ import warnings
 from PIL import Image, UnidentifiedImageError
 
 
-MAX_IMAGE_SIZE = 10 * 1024 * 1024  # 10 MB
-MAX_IMAGE_PIXELS = 25_000_000      # 25 megapixels
+MAX_IMAGE_SIZE = 10 * 1024 * 1024    # 10 MB
+MAX_IMAGE_PIXELS = 25_000_000        # 25 megapixels
 
 ALLOWED_FORMATS = {"JPEG", "PNG"}
 
@@ -17,9 +32,15 @@ class ImageValidationError(Exception):
 
 def validate_image(image_bytes: bytes) -> dict:
     """
-    Validate image content, format and dimensions.
+    Validate image content, format, dimensions and integrity.
 
     The function does not save the uploaded image.
+
+    Returns:
+        dict with 'format', 'width', 'height' keys.
+
+    Raises:
+        ImageValidationError for any validation failure.
     """
 
     if not image_bytes:
@@ -50,12 +71,23 @@ def validate_image(image_bytes: bytes) -> dict:
                         "Image dimensions exceed the allowed limit."
                     )
 
+                # Reject animated / multi-frame images
+                try:
+                    if hasattr(image, "n_frames") and image.n_frames > 1:
+                        raise ImageValidationError(
+                            "Animated or multi-frame images are not supported."
+                        )
+                except Exception as frame_exc:
+                    if isinstance(frame_exc, ImageValidationError):
+                        raise
+                    # If we can't determine frame count, proceed cautiously
+
                 image.verify()
 
         return {
             "format": image.format,
             "width": width,
-            "height": height
+            "height": height,
         }
 
     except ImageValidationError:

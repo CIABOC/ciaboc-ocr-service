@@ -1,7 +1,15 @@
+"""
+Pydantic response schemas for the OCR API.
 
-from typing import Literal
+These schemas define the HTTP response structure returned by the
+/api/v1/ocr/extract endpoint.
+"""
+
+from typing import Literal, Optional
 
 from pydantic import BaseModel, Field
+
+from app.schemas.document_schema import DocumentExtractionResult
 
 
 class DocumentInfo(BaseModel):
@@ -33,4 +41,12 @@ class OCRResponse(BaseModel):
     message: str
     document: DocumentInfo
     ocr_result: OCRResult
+    extraction: Optional[DocumentExtractionResult] = Field(
+        None,
+        description="Structured field extraction result, if available."
+    )
+    processing_time_ms: Optional[float] = Field(
+        None,
+        description="Processing time in milliseconds."
+    )
     verification_required: bool = True

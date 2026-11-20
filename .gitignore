@@ -1,0 +1,38 @@
+# Virtual environment
+venv/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Environment files with secrets
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test cache
+.pytest_cache/
+
+# Sample identity documents
+# Keep synthetic test generators but not actual document images
+samples/*.jpg
+samples/*.jpeg
+samples/*.png
+samples/*.tiff
+samples/*.bmp
+
+# PaddleOCR model cache (downloaded at runtime)
+~/.paddleocr/

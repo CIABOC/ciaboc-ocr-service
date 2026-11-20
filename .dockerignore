@@ -1,0 +1,46 @@
+# Ignore version control
+.git
+.gitignore
+
+# Virtual environment
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Test files
+tests/
+.pytest_cache/
+pytest.ini
+
+# Sample files (may contain test images)
+samples/
+
+# Environment files with secrets
+.env
+
+# IDE / editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Documentation source (keep compiled docs if needed)
+docs/
+
+# Docker files (avoid recursion)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Build artifacts
+*.egg-info/
+dist/
+build/

@@ -1,0 +1,38 @@
+# ============================================================
+# CIABOC OCR Service — Docker Compose
+# ============================================================
+# For local development and internal deployment.
+# ============================================================
+
+services:
+  ocr-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ciaboc-ocr-service
+    ports:
+      - "8000:8000"
+    environment:
+      - CIABOC_OCR_APP_ENV=production
+      - CIABOC_OCR_API_KEY=${CIABOC_OCR_API_KEY:-}
+      - CIABOC_OCR_OCR_MAX_CONCURRENCY=2
+      - CIABOC_OCR_RATE_LIMIT_REQUESTS=60
+      - CIABOC_OCR_LOG_LEVEL=WARNING
+    env_file:
+      - .env
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "2.0"
+          memory: 2G
+        reservations:
+          cpus: "1.0"
+          memory: 1G
+    healthcheck:
+      test: ["CMD", "python", "-c",
+        "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
